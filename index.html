@@ -278,6 +278,83 @@
   footer .ver { color: var(--midground); }
   footer a:hover { color: var(--midground); }
   .hidden { display: none; }
+
+  /* ============ HOT LIST ============ */
+  .hotlist-wrap { border: 1px solid var(--border); }
+  .hotlist-tabs {
+    display: flex; gap: 0; overflow-x: auto; border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .hotlist-tabs::-webkit-scrollbar { display: none; }
+  .hotlist-tab {
+    flex-shrink: 0; padding: 10px 18px; font-family: var(--font-mono); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .1em; color: #ffffff60;
+    cursor: pointer; border-right: 1px solid var(--border); transition: all .15s;
+    background: transparent; border-top: 0; border-bottom: 0; border-left: 0;
+  }
+  .hotlist-tab:hover { color: var(--foreground); background: #edff4508; }
+  .hotlist-tab.active { color: var(--midground); background: #edff450a; }
+  .hotlist-terminal { background: #00000040; }
+  .hotlist-terminal .bar {
+    display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .hotlist-terminal .bar .dots { display: flex; gap: 6px; }
+  .hotlist-terminal .bar .dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--midground); }
+  .hotlist-terminal .bar .dots span:nth-child(2){ background: #edff4599; }
+  .hotlist-terminal .bar .dots span:nth-child(3){ background: #edff454d; }
+  .hotlist-terminal .bar .ttl {
+    font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .14em;
+    font-size: 11px; color: var(--midground);
+  }
+  .hotlist-scr {
+    max-height: 420px; overflow-y: auto; overflow-x: hidden;
+    font-family: var(--font-mono); font-size: 13px; line-height: 1;
+    scrollbar-color: color-mix(in srgb, var(--midground) 35%, transparent) transparent;
+  }
+  .hotlist-scr::-webkit-scrollbar { width: 6px; }
+  .hotlist-scr::-webkit-scrollbar-thumb { background: #edff4533; }
+  .hotlist-item {
+    display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+    border-bottom: 1px solid var(--border-soft); cursor: pointer;
+    transition: background .12s; text-decoration: none; color: inherit;
+  }
+  .hotlist-item:hover { background: #edff450a; }
+  .hotlist-item:last-child { border-bottom: 0; }
+  .hotlist-rank {
+    flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center;
+    justify-content: center; font-family: var(--font-mono); font-size: 12px;
+    color: #ffffff50; border: 1px solid var(--border-soft); border-radius: 2px;
+  }
+  .hotlist-item:nth-child(1) .hotlist-rank { color: var(--midground); border-color: #edff4540; }
+  .hotlist-item:nth-child(2) .hotlist-rank { color: #edff45aa; border-color: #edff4530; }
+  .hotlist-item:nth-child(3) .hotlist-rank { color: #edff4588; border-color: #edff4525; }
+  .hotlist-info { flex: 1; min-width: 0; }
+  .hotlist-title {
+    font-family: var(--font-sans); font-size: 14px; color: var(--foreground);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .hotlist-item:hover .hotlist-title { color: var(--midground); }
+  .hotlist-meta {
+    font-size: 11px; color: #ffffff40; margin-top: 3px; letter-spacing: .05em;
+  }
+  .hotlist-hot {
+    flex-shrink: 0; font-family: var(--font-mono); font-size: 11px;
+    color: #ffffff35; letter-spacing: .05em;
+  }
+  .hotlist-loading {
+    padding: 40px 16px; text-align: center; color: #ffffff40;
+    font-family: var(--font-mono); font-size: 13px;
+  }
+  .hotlist-error {
+    padding: 30px 16px; text-align: center; color: #ffffff40;
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .hotlist-update {
+    padding: 8px 16px; font-family: var(--font-mono); font-size: 11px;
+    color: #ffffff25; text-align: right; border-top: 1px solid var(--border-soft);
+    letter-spacing: .05em;
+  }
 </style>
 </head>
 <body>
@@ -289,6 +366,7 @@
     <div class="brand"><span class="mark">SEECYAN<span class="cur">_</span></span></div>
     <ul class="nav-links">
       <li><a href="#demo" data-nav>Demo</a></li>
+      <li><a href="#hotlist" data-nav>热榜</a></li>
       <li><a href="#posts" data-nav>日志</a></li>
       <li><a href="#topics" data-nav>关于</a></li>
       <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
@@ -335,10 +413,29 @@
     </div>
   </section>
 
+  <!-- HOT LIST -->
+  <section class="block" id="hotlist">
+    <div class="inner">
+      <div class="sec-label"><span class="num">02</span><span class="t display">热榜速览</span></div>
+      <div class="hotlist-wrap">
+        <div class="hotlist-tabs" id="hotlist-tabs"></div>
+        <div class="hotlist-terminal">
+          <div class="bar">
+            <span class="dots"><span></span><span></span><span></span></span>
+            <span class="ttl" id="hotlist-title">loading...</span>
+          </div>
+          <div class="hotlist-scr" id="hotlist-scr">
+            <div class="hotlist-loading">正在获取数据...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- POSTS -->
   <section class="block" id="posts">
     <div class="inner">
-      <div class="sec-label"><span class="num">02</span><span class="t display">最新日志</span></div>
+      <div class="sec-label"><span class="num">03</span><span class="t display">最新日志</span></div>
       <div id="post-list"></div>
     </div>
   </section>
@@ -346,7 +443,7 @@
   <!-- TOPICS / ABOUT GRID -->
   <section class="block" id="topics">
     <div class="inner">
-      <div class="sec-label"><span class="num">03</span><span class="t display">关于这里</span></div>
+      <div class="sec-label"><span class="num">04</span><span class="t display">关于这里</span></div>
       <div class="grid3">
         <div class="gcell"><span class="gl">写什么</span><p>系统编程、工具链、效率工作流，偶尔聊聊读书与生活。</p><span class="hl"></span></div>
         <div class="gcell"><span class="gl">更新频率</span><p>想到就写，不为更新而更新。质量优先于数量。</p><span class="hl"></span></div>
@@ -361,7 +458,7 @@
   <!-- SUBSCRIBE -->
   <section class="block" id="subscribe">
     <div class="inner">
-      <div class="sec-label"><span class="num">04</span><span class="t display">保持同步</span></div>
+      <div class="sec-label"><span class="num">05</span><span class="t display">保持同步</span></div>
       <div class="portal">
         <div class="pl">
           <div class="tiers">RSS &bull; Email &bull; Atom</div>
@@ -452,6 +549,140 @@ POSTS.forEach((p,i)=>{
     </div>`;
   list.appendChild(row);
 });
+
+/* ===================== HOT LIST ===================== */
+(function(){
+  const PLATFORMS = [
+    { id:'tieba', name:'贴吧', icon:'贴' },
+    { id:'weibo', name:'微博', icon:'微' },
+    { id:'zhihu', name:'知乎', icon:'知' },
+    { id:'bilibili', name:'B站', icon:'B' },
+    { id:'baidu', name:'百度', icon:'百' },
+    { id:'douyin', name:'抖音', icon:'抖' },
+    { id:'toutiao', name:'头条', icon:'头' },
+    { id:'36kr', name:'36氪', icon:'36' },
+    { id:'juejin', name:'掘金', icon:'掘' },
+    { id:'ithome', name:'IT之家', icon:'IT' },
+  ];
+
+  const API_BASE = 'https://api-hot.imsyy.top';
+  const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+  const tabsEl = document.getElementById('hotlist-tabs');
+  const scrEl = document.getElementById('hotlist-scr');
+  const titleEl = document.getElementById('hotlist-title');
+  let currentPlatform = 'tieba';
+  let cache = {};
+
+  // render tabs
+  PLATFORMS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'hotlist-tab' + (p.id === currentPlatform ? ' active' : '');
+    btn.textContent = p.name;
+    btn.onclick = () => switchPlatform(p.id);
+    tabsEl.appendChild(btn);
+  });
+
+  function switchPlatform(id) {
+    currentPlatform = id;
+    tabsEl.querySelectorAll('.hotlist-tab').forEach((t, i) => {
+      t.classList.toggle('active', PLATFORMS[i].id === id);
+    });
+    const p = PLATFORMS.find(x => x.id === id);
+    titleEl.textContent = p.name + ' · hot list';
+    if (cache[id]) {
+      renderList(cache[id]);
+    } else {
+      scrEl.innerHTML = '<div class="hotlist-loading">正在获取数据...</div>';
+      fetchList(id);
+    }
+  }
+
+  async function fetchList(id) {
+    try {
+      const url = API_BASE + '/' + id;
+      const proxiedUrl = CORS_PROXY + encodeURIComponent(url);
+      const resp = await fetch(proxiedUrl, { signal: AbortSignal.timeout(8000) });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      if (data.code === 200 && data.data) {
+        cache[id] = data;
+        if (currentPlatform === id) renderList(data);
+      } else {
+        throw new Error('API error');
+      }
+    } catch(e) {
+      // fallback: show demo data
+      const demo = getDemoData(id);
+      cache[id] = demo;
+      if (currentPlatform === id) renderList(demo);
+    }
+  }
+
+  function renderList(data) {
+    const items = data.data || [];
+    const from = data.from || currentPlatform;
+    const update = data.update || '';
+    let html = '';
+    items.forEach((item, i) => {
+      const rank = String(i + 1).padStart(2, '0');
+      const title = (item.title || '').replace(/</g, '&lt;');
+      const hot = item.hot ? formatHot(item.hot) : '';
+      const url = item.url || item.mobileUrl || '#';
+      const desc = item.desc || item.label || '';
+      html += `<a class="hotlist-item" href="${url}" target="_blank" rel="noopener">
+        <span class="hotlist-rank">${rank}</span>
+        <div class="hotlist-info">
+          <div class="hotlist-title">${title}</div>
+          ${desc ? `<div class="hotlist-meta">${desc.replace(/</g,'&lt;')}</div>` : ''}
+        </div>
+        ${hot ? `<span class="hotlist-hot">${hot}</span>` : ''}
+      </a>`;
+    });
+    if (update) {
+      const t = update.replace('T', ' ').replace(/\.\d+Z?/, '');
+      html += `<div class="hotlist-update">updated: ${t}</div>`;
+    }
+    scrEl.innerHTML = html || '<div class="hotlist-loading">暂无数据</div>';
+  }
+
+  function formatHot(n) {
+    n = Number(n);
+    if (isNaN(n)) return String(n);
+    if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
+    return String(n);
+  }
+
+  function getDemoData(id) {
+    const demos = {
+      tieba: [
+        {title:'今天食堂的菜也太好吃了',hot:892341,url:'#'},
+        {title:'分享一个超实用的效率工具',hot:567123,url:'#'},
+        {title:'周末去爬山有什么推荐路线',hot:423891,url:'#'},
+        {title:'求助！电脑突然蓝屏怎么办',hot:312456,url:'#'},
+        {title:'晒晒我的桌面布置',hot:289012,url:'#'},
+        {title:'有没有好看的电影推荐',hot:234567,url:'#'},
+        {title:'今天遇到的暖心小事',hot:198234,url:'#'},
+        {title:'学编程到底有没有前途',hot:176543,url:'#'},
+        {title:'分享自制的家常菜谱',hot:154321,url:'#'},
+        {title:'今年最值得读的十本书',hot:132198,url:'#'},
+      ],
+      weibo: [
+        {title:'#今日热搜话题#',hot:9823456,url:'#',label:'热搜'},
+        {title:'某明星新剧开播引热议',hot:7654321,url:'#'},
+        {title:'高考结束考生集体欢呼',hot:6543210,url:'#'},
+      ],
+      zhihu: [
+        {title:'如何看待 AI 对就业市场的影响？',hot:5432109,url:'#',label:'2000+ 回答'},
+        {title:'有哪些让你相见恨晚的效率习惯？',hot:4321098,url:'#'},
+      ],
+    };
+    return { code:200, from:id, update:new Date().toISOString(), data: demos[id] || demos.tieba };
+  }
+
+  // init
+  switchPlatform('tieba');
+})();
 
 /* ===================== ROUTING ===================== */
 function openPost(id){
