@@ -520,97 +520,87 @@ POSTS.forEach((p,i)=>{
 
 /* ===================== HOT LIST ===================== */
 (function(){
+  const SHOW = 3;
+  const gridEl = document.getElementById('hotlist-grid');
+
   const PLATFORMS = [
-    { id:'tieba', name:'贴吧', icon:'贴' },
-    { id:'weibo', name:'微博', icon:'微' },
-    { id:'zhihu', name:'知乎', icon:'知' },
-    { id:'bilibili', name:'B站', icon:'B' },
-    { id:'baidu', name:'百度', icon:'百' },
-    { id:'douyin', name:'抖音', icon:'抖' },
-    { id:'toutiao', name:'头条', icon:'头' },
-    { id:'36kr', name:'36氪', icon:'36' },
-    { id:'juejin', name:'掘金', icon:'掘' },
-    { id:'ithome', name:'IT之家', icon:'IT' },
+    {
+      id:'baidu', name:'百度热搜', icon:'百',
+      fetch: async () => {
+        const r = await fetch('https://v.api.aa1.cn/api/topbaidu/index.php', {signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        return (d.newslist||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.url||'#',hot:x.hotnum}));
+      }
+    },
+    {
+      id:'bilibili', name:'B站热搜', icon:'B',
+      fetch: async () => {
+        const r = await fetch('https://api.bilibili.com/x/web-interface/wbi/search/square?limit='+SHOW,{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        return (d.data?.trending?.list||[]).slice(0,SHOW).map(x=>({title:x.keyword,url:'https://search.bilibili.com/all?keyword='+encodeURIComponent(x.keyword),hot:x.hot_id}));
+      }
+    },
+    {
+      id:'sspai', name:'少数派', icon:'派',
+      fetch: async () => {
+        const r = await fetch('https://sspai.com/api/v1/articles?limit='+SHOW+'&sort=matrix_at',{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        return (d.data||d.list||[]).slice(0,SHOW).map(x=>({title:x.title,url:'https://sspai.com/article/'+(x.id||x.slug),hot:x.like_count||x.views}));
+      }
+    },
+    {
+      id:'github', name:'GitHub', icon:'G',
+      fetch: async () => {
+        const d=new Date();d.setDate(d.getDate()-7);const since=d.toISOString().split('T')[0];
+        const r = await fetch('https://api.github.com/search/repositories?q=created:>'+since+'&sort=stars&order=desc&per_page='+SHOW,{signal:AbortSignal.timeout(8000)});
+        const data = await r.json();
+        return (data.items||[]).slice(0,SHOW).map(x=>({title:x.full_name,url:x.html_url,hot:x.stargazers_count}));
+      }
+    },
+    {
+      id:'36kr', name:'36氪', icon:'36',
+      fetch: async () => {
+        const r = await fetch('https://36kr.com/api/newsflash?per_page='+SHOW,{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        return (d.data?.items||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.news_url||'#',hot:x.views_count}));
+      }
+    },
+    {
+      id:'v2ex', name:'V2EX', icon:'V',
+      fetch: async () => {
+        const r = await fetch('https://www.v2ex.com/api/topics/hot.json',{signal:AbortSignal.timeout(8000)});
+        const items = await r.json();
+        return (items||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.url||'#',hot:x.replies}));
+      }
+    },
   ];
 
-  const API_BASE = 'https://api-hot.imsyy.top';
-  const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-  const gridEl = document.getElementById('hotlist-grid');
-  const SHOW_COUNT = 3;
-
-  // render skeleton cards
+  // render skeleton
   PLATFORMS.forEach(p => {
     const card = document.createElement('div');
     card.className = 'hotlist-card';
-    card.id = 'hc-' + p.id;
-    card.innerHTML = `
-      <div class="hotlist-card-head">
-        <span class="hotlist-card-icon">${p.icon}</span>
-        <span class="hotlist-card-name">${p.name}</span>
-      </div>
-      <div class="hotlist-card-items"><div class="hotlist-card-status">loading...</div></div>`;
+    card.id = 'hc-'+p.id;
+    card.innerHTML = `<div class="hotlist-card-head"><span class="hotlist-card-icon">${p.icon}</span><span class="hotlist-card-name">${p.name}</span></div><div class="hotlist-card-items"><div class="hotlist-card-status">loading...</div></div>`;
     gridEl.appendChild(card);
   });
 
-  // fetch all platforms in parallel
-  PLATFORMS.forEach(p => fetchPlatform(p));
-
-  async function fetchPlatform(p) {
-    const itemsEl = document.querySelector('#hc-' + p.id + ' .hotlist-card-items');
+  // fetch all
+  PLATFORMS.forEach(async p => {
+    const el = document.querySelector('#hc-'+p.id+' .hotlist-card-items');
     try {
-      const url = API_BASE + '/' + p.id;
-      const proxiedUrl = CORS_PROXY + encodeURIComponent(url);
-      const resp = await fetch(proxiedUrl, { signal: AbortSignal.timeout(8000) });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const data = await resp.json();
-      if (data.code === 200 && data.data) {
-        renderCard(itemsEl, data.data.slice(0, SHOW_COUNT));
-      } else {
-        throw new Error('API error');
-      }
+      const items = await p.fetch();
+      if(!items.length) throw new Error('empty');
+      el.innerHTML = items.map((x,i) => {
+        const t = (x.title||'').replace(/</g,'&lt;');
+        const h = x.hot ? formatHot(x.hot) : '';
+        return `<a class="hotlist-item" href="${x.url||'#'}" target="_blank" rel="noopener"><span class="hotlist-rank">${i+1}</span><div class="hotlist-info"><div class="hotlist-title">${t}</div></div>${h?`<span class="hotlist-hot">${h}</span>`:''}</a>`;
+      }).join('');
     } catch(e) {
-      renderCard(itemsEl, getDemoItems(p.id));
+      el.innerHTML = '<div class="hotlist-card-status">暂时无法获取</div>';
     }
-  }
+  });
 
-  function renderCard(el, items) {
-    let html = '';
-    items.forEach((item, i) => {
-      const rank = i + 1;
-      const title = (item.title || '').replace(/</g, '&lt;');
-      const hot = item.hot ? formatHot(item.hot) : '';
-      const url = item.url || item.mobileUrl || '#';
-      html += `<a class="hotlist-item" href="${url}" target="_blank" rel="noopener">
-        <span class="hotlist-rank">${rank}</span>
-        <div class="hotlist-info"><div class="hotlist-title">${title}</div></div>
-        ${hot ? `<span class="hotlist-hot">${hot}</span>` : ''}
-      </a>`;
-    });
-    el.innerHTML = html;
-  }
-
-  function formatHot(n) {
-    n = Number(n);
-    if (isNaN(n)) return String(n);
-    if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
-    return String(n);
-  }
-
-  function getDemoItems(id) {
-    const demos = {
-      tieba: [{title:'今天食堂的菜也太好吃了',hot:892341},{title:'分享一个超实用的效率工具',hot:567123},{title:'周末去爬山有什么推荐路线',hot:423891}],
-      weibo: [{title:'#今日热搜话题#',hot:9823456},{title:'某明星新剧开播引热议',hot:7654321},{title:'高考结束考生集体欢呼',hot:6543210}],
-      zhihu: [{title:'如何看待 AI 对就业市场的影响？',hot:5432109},{title:'有哪些让你相见恨晚的效率习惯？',hot:4321098},{title:'程序员如何保持竞争力？',hot:3210987}],
-      bilibili: [{title:'【年度必看】震撼混剪',hot:8765432},{title:'学习编程的正确姿势',hot:7654321},{title:'这期视频笑死我了',hot:6543210}],
-      baidu: [{title:'高考成绩查询入口开放',hot:9876543},{title:'夏季防暑小妙招',hot:8765432},{title:'新能源汽车补贴政策',hot:7654321}],
-      douyin: [{title:'这个舞蹈太上头了',hot:87654321},{title:'教你三分钟做一道菜',hot:76543210},{title:'旅行必去的十个地方',hot:65432109}],
-      toutiao: [{title:'国际局势最新动态',hot:9876543},{title:'高考志愿填报指南',hot:8765432},{title:'夏日养生注意事项',hot:7654321}],
-      '36kr': [{title:'AI 创业公司再获融资',hot:543210},{title:'互联网大厂最新裁员动态',hot:432109},{title:'新能源赛道竞争白热化',hot:321098}],
-      juejin: [{title:'Vue 3.5 新特性详解',hot:43210},{title:'如何写出优雅的 TypeScript',hot:32109},{title:'Docker 部署实战指南',hot:21098}],
-      ithome: [{title:'Windows 12 最新爆料',hot:54321},{title:'iPhone 18 配置曝光',hot:43210},{title:'显卡价格终于降了',hot:32109}],
-    };
-    return demos[id] || demos.tieba;
-  }
+  function formatHot(n){n=Number(n);if(isNaN(n))return'';if(n>=10000)return(n/10000).toFixed(1)+'w';return String(n);}
 })();
 
 /* ===================== ROUTING ===================== */
