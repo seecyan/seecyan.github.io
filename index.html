@@ -1,923 +1,619 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="zh-CN">
-
-
 <head>
-    <meta charset="utf-8">
-    <meta name="keywords" content="Seecyan">
-    <meta name="description" content="">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SEECYAN // 终端日志 — 与你一同生长的博客</title>
+<style>
+  /* ============ FONTS (local, matching Hermes Agent) ============ */
+  @font-face { font-family:"Collapse"; src:url("fonts/Collapse_Regular.woff2?v=2") format("woff2"); font-weight:400; font-display:swap; }
+  @font-face { font-family:"Collapse"; src:url("fonts/Collapse_Bold.woff2?v=2") format("woff2"); font-weight:700; font-display:swap; }
+  @font-face { font-family:"CourierPrime"; src:url("fonts/CourierPrime_Regular.woff2?v=2") format("woff2"); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:"CourierPrime"; src:url("fonts/CourierPrime_Italic.woff2?v=2") format("woff2"); font-weight:400; font-style:italic; font-display:swap; }
+  @font-face { font-family:"CourierPrime"; src:url("fonts/CourierPrime_Bold.woff2?v=2") format("woff2"); font-weight:700; font-display:swap; }
+  @font-face { font-family:"RulesExpanded"; src:url("fonts/RulesExpanded_Regular.woff2?v=2") format("woff2"); font-weight:400; font-display:swap; }
+  @font-face { font-family:"RulesExpanded"; src:url("fonts/RulesExpanded_Bold.woff2?v=2") format("woff2"); font-weight:700; font-display:swap; }
+  @font-face { font-family:"RulesCompressed"; src:url("fonts/RulesCompressed_Regular.woff2?v=2") format("woff2"); font-weight:400; font-display:swap; }
+  @font-face { font-family:"RulesCompressed"; src:url("fonts/RulesCompressed_Medium.woff2?v=2") format("woff2"); font-weight:600; font-display:swap; }
+  @font-face { font-family:"Mondwest"; src:url("fonts/Mondwest_Regular.woff2?v=2") format("woff2"); font-weight:400; font-display:swap; }
+  @font-face { font-family:"Sigurd"; src:url("fonts/Sigurd_Variable.woff2?v=2") format("woff2"); font-weight:300 900; font-display:swap; }
 
+  /* ============ TOKENS (exact Hermes palette) ============ */
+  :root {
+    --background: #0000f2;     /* hermes-web electric blue */
+    --foreground: #f5f5f5;     /* hw-fg off-white */
+    --midground: #edff45;      /* hw-accent lime */
+    --text-tertiary: #edff45;
+    --accent-lime: #edff45;
+    --accent-blue: #0000f2;
+    --accent-green: #edff45;
+    --accent-red: #edff45;
+    --paper: #ffffff;          /* hw-paper */
+    --border: #f5f5f530;       /* fg / translucent */
+    --border-soft: #f5f5f518;
 
-    <title>Seecyan</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    --font-sans: "Collapse", ui-sans-serif, system-ui, Arial, sans-serif;
+    --font-mono: "CourierPrime", "Courier New", ui-monospace, monospace;
+    --font-expanded: "RulesExpanded", "Collapse", sans-serif;
+    --font-compressed: "RulesCompressed", "Collapse", sans-serif;
+    --font-mondwest: "Mondwest", "Collapse", sans-serif;
+    --font-sigurd: "Sigurd", "RulesExpanded", serif;
+  }
 
-    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
-    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="/css/my.css">
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    line-height: 1.6; font-size: 16px; min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 12% -5%, #edff451a, transparent 42%),
+      radial-gradient(circle at 90% 110%, #ffffff12, transparent 45%);
+    background-attachment: fixed;
+  }
+  ::selection { background: var(--midground); color: var(--background); }
+  body { scrollbar-color: color-mix(in srgb, var(--midground) 65%, transparent) transparent; }
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-thumb { background: #edff4555; }
+  ::-webkit-scrollbar-track { background: transparent; }
 
-    <script src="/libs/jquery/jquery.min.js"></script>
+  /* shared label styles */
+  .label {
+    font-family: var(--font-mondwest); font-size: .9375rem;
+    letter-spacing: .1875rem; text-transform: none; color: var(--foreground);
+  }
+  .display { font-family: var(--font-expanded); text-transform: uppercase; letter-spacing: .02em; font-weight: 700; }
 
-<meta name="generator" content="Hexo 5.4.0">
-<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="Seecyan" type="application/atom+xml">
-</head>
+  .wrap { max-width: 1080px; margin: 0 auto; }
 
+  /* ============ NAV ============ */
+  nav {
+    border-bottom: 1px solid var(--border);
+    background: #0000f2d9; backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 60;
+  }
+  nav .inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 24px; height: 58px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand .mark {
+    font-family: var(--font-expanded); font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; font-size: 16px;
+  }
+  .brand .mark .cur { color: var(--midground); animation: 1s step-end infinite blink; }
+  .nav-links { display: flex; gap: 6px; align-items: center; list-style: none; }
+  .nav-links a {
+    color: #ffffffb0; text-decoration: none; font-family: var(--font-mono);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .12em;
+    padding: 6px 12px; border: 1px solid transparent; transition: all .15s;
+  }
+  .nav-links a:hover { color: var(--midground); border-color: var(--border); }
+  .nav-links a.cta { border-color: #edff4540; color: var(--midground); }
+  .nav-links a.cta:hover { background: var(--midground); color: var(--background); }
+  @media (max-width: 640px){ .nav-links a:not(.cta){ display:none; } }
 
+  .opensrc {
+    text-align: center; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase; color: #ffffff70;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .opensrc b { color: var(--midground); font-weight: 400; }
 
-   <style>
-    body{
-       background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
-       background-repeat:no-repeat;
-       background-size:cover;
-       background-attachment:fixed;
-    }
+  /* ============ HERO ============ */
+  header.hero { padding: 0 24px; border-bottom: 1px solid var(--border); }
+  header.hero .inner { max-width: 1080px; margin: 0 auto; padding: 72px 0 64px; }
+  header.hero .kicker { display: inline-block; margin-bottom: 26px; color: var(--midground); }
+  header.hero h1 {
+    font-family: var(--font-expanded); text-transform: uppercase; font-weight: 700;
+    font-size: clamp(40px, 9vw, 92px); line-height: .96; letter-spacing: -0.005em;
+  }
+  header.hero h1 .l2 { color: var(--midground); }
+  header.hero p.lede {
+    font-family: var(--font-sans); color: #f5f5f5b0; max-width: 540px;
+    margin-top: 26px; font-size: 17px; line-height: 1.55;
+  }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--font-mono); font-size: 13px; text-transform: uppercase;
+    letter-spacing: .1em; padding: 11px 22px; text-decoration: none;
+    border: 1px solid #edff4545; color: var(--midground); transition: all .15s; cursor: pointer; background: transparent;
+  }
+  .btn:hover { background: var(--midground); color: var(--background); }
+  .btn.solid { background: var(--midground); color: var(--background); border-color: var(--midground); }
+  .btn.solid:hover { background: transparent; color: var(--midground); }
+
+  /* ============ SECTION SCAFFOLD ============ */
+  section.block { border-bottom: 1px solid var(--border); padding: 0 24px; }
+  section.block .inner { max-width: 1080px; margin: 0 auto; padding: 56px 0; }
+  .sec-label { display: flex; align-items: baseline; gap: 14px; margin-bottom: 30px; }
+  .sec-label .num { font-family: var(--font-mono); color: var(--midground); font-size: 13px; }
+  .sec-label .t { color: var(--foreground); }
+
+  /* ============ "SEE IT IN ACTION" — typewriter terminal ============ */
+  .demo-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0; border: 1px solid var(--border); }
+  @media (max-width: 860px){ .demo-grid { grid-template-columns: 1fr; } }
+  .demo-left { padding: 22px; }
+  .terminal { border: 4px double #ffffff35; background: #00000066; }
+  .terminal .bar {
+    display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .terminal .bar .dots { display: flex; gap: 6px; }
+  .terminal .bar .dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--midground); }
+  .terminal .bar .dots span:nth-child(1){ mix-blend-mode: plus-lighter; }
+  .terminal .bar .dots span:nth-child(2){ background: #edff4599; }
+  .terminal .bar .dots span:nth-child(3){ background: #edff454d; }
+  .terminal .bar .ttl {
+    font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .14em;
+    font-size: 11px; color: var(--midground);
+  }
+  .terminal .scr {
+    height: 320px; overflow-y: auto; overflow-x: hidden; white-space: pre-wrap;
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+    padding: 16px; text-transform: none;
+  }
+  .scr .ln-prompt { color: var(--accent-green); }
+  .scr .ln-cmd { color: var(--foreground); }
+  .scr .ln-out { color: #f5f5f5aa; }
+  .scr .ln-accent { color: var(--midground); }
+  /* dithered blinking block cursor (exact Hermes technique) */
+  .cursor {
+    display: inline-block; width: 1ch; height: 1em; margin-left: 2px;
+    vertical-align: text-bottom;
+    background: repeating-conic-gradient(currentColor 0% 25%, transparent 0% 50%) 0 0 / 2px 2px;
+    color: var(--midground);
+    animation: 1s step-end infinite blink;
+  }
+  @keyframes blink { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
+  .demo-right {
+    position: relative; border-left: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; padding: 22px;
+    background:
+      radial-gradient(circle at 50% 45%, #edff4518, transparent 60%);
+    overflow: hidden;
+  }
+  @media (max-width: 860px){ .demo-right { border-left: 0; border-top: 1px solid var(--border); min-height: 220px; } }
+  .demo-right .glyph {
+    font-family: var(--font-sigurd); font-size: clamp(72px, 16vw, 150px);
+    font-weight: 800; color: #edff4526; line-height: 1; user-select: none;
+    text-transform: uppercase; letter-spacing: -.02em;
+  }
+  .demo-right .stamp {
+    position: absolute; right: 14px; bottom: 12px; font-family: var(--font-mondwest);
+    font-size: .9375rem; letter-spacing: .1875rem; color: var(--accent-red);
+  }
+
+  /* ============ NUMBERED FEATURE / POST BLOCKS ============ */
+  .feature-row {
+    display: grid; grid-template-columns: 56px 1fr; gap: 0;
+    border-top: 1px solid var(--border); cursor: pointer;
+    transition: background .15s;
+  }
+  .feature-row:hover { background: #edff450a; }
+  .feature-row:last-child { border-bottom: 1px solid var(--border); }
+  .feature-row .fn {
+    font-family: var(--font-mono); color: var(--midground); font-size: 13px;
+    padding: 26px 0 0 0; border-right: 1px solid var(--border); text-align: center;
+  }
+  .feature-row .fc { padding: 24px 22px; }
+  .feature-row .meta {
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .feature-row .tag {
+    font-family: var(--font-mondwest); font-size: 13px; letter-spacing: .14em;
+    color: var(--midground); mix-blend-mode: plus-lighter;
+  }
+  .feature-row .date { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; color: #ffffff66; text-transform: uppercase; }
+  .feature-row h3 {
+    font-family: var(--font-expanded); text-transform: uppercase; font-weight: 700;
+    font-size: 26px; line-height: 1.05; margin-bottom: 8px;
+  }
+  .feature-row:hover h3 { color: var(--midground); }
+  .feature-row p { font-family: var(--font-sans); color: #f5f5f5a0; font-size: 15.5px; max-width: 620px; }
+  .feature-row .arrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent-lime); text-transform: uppercase; letter-spacing: .1em; margin-top: 12px; display: inline-block; }
+
+  /* ============ FEATURE GRID (about/topics) ============ */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 760px){ .grid3 { grid-template-columns: 1fr; } }
+  .gcell { padding: 24px; position: relative; border-bottom: 1px solid var(--border); }
+  .grid3 .gcell { border-right: 1px solid var(--border); }
+  .grid3 .gcell:nth-child(3n){ border-right: 0; }
+  .gcell .gl { display: block; font-family: var(--font-mondwest); font-size: 15px; letter-spacing: .14em; margin-bottom: 10px; mix-blend-mode: plus-lighter; }
+  .gcell p { font-family: var(--font-sans); font-size: 15px; color: #f5f5f5a0; line-height: 1.55; }
+  .gcell .hl { position: absolute; inset: 4px; background: var(--midground); opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .gcell:hover .hl { opacity: .05; transition-duration: 0s; }
+
+  /* ============ SUBSCRIBE (portal-like) ============ */
+  .portal { display: grid; grid-template-columns: 1fr 320px; gap: 0; border: 1px solid var(--border); align-items: stretch; }
+  @media (max-width: 760px){ .portal { grid-template-columns: 1fr; } }
+  .portal .pl { padding: 36px 30px; }
+  .portal .tiers { font-family: var(--font-mono); color: var(--midground); letter-spacing: .12em; font-size: 12px; text-transform: uppercase; margin-bottom: 14px; }
+  .portal h2 { font-family: var(--font-expanded); text-transform: uppercase; font-weight: 700; font-size: 34px; line-height: 1; margin-bottom: 14px; }
+  .portal p { font-family: var(--font-sans); color: #f5f5f5a8; font-size: 15.5px; max-width: 440px; }
+  .portal .form { display: flex; gap: 0; margin-top: 22px; max-width: 440px; border: 1px solid #edff4540; }
+  .portal .form input {
+    flex: 1; background: transparent; border: 0; color: var(--foreground);
+    font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none;
+  }
+  .portal .form input::placeholder { color: #ffffff55; }
+  .portal .form button { background: var(--midground); color: var(--background); border: 0; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; font-size: 12px; padding: 0 20px; cursor: pointer; }
+  .portal .pr {
+    border-left: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 40%, #edff4526, transparent 65%);
+  }
+  @media (max-width: 760px){ .portal .pr { border-left: 0; border-top: 1px solid var(--border); min-height: 160px; } }
+  .portal .pr .big { font-family: var(--font-sigurd); font-size: 120px; font-weight: 800; color: #ffffff14; }
+
+  /* ============ ARTICLE ============ */
+  #article { display: none; padding: 0 24px; }
+  #article.active { display: block; animation: fade .25s ease; }
+  #article .inner { max-width: 760px; margin: 0 auto; padding: 48px 0; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px);} to { opacity: 1;} }
+  .back-btn {
+    background: transparent; border: 1px solid #edff4545; color: var(--midground);
+    font-family: var(--font-mono); cursor: pointer; padding: 8px 16px; font-size: 12px;
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: 30px; transition: all .15s;
+  }
+  .back-btn:hover { background: var(--midground); color: var(--background); }
+  .article-body h1 { font-family: var(--font-expanded); text-transform: uppercase; font-weight: 700; font-size: clamp(30px,6vw,48px); line-height: 1.02; margin-bottom: 16px; }
+  .article-body .post-meta { display: flex; gap: 14px; align-items: center; margin-bottom: 30px; flex-wrap: wrap; }
+  .article-body .post-meta .tag { font-family: var(--font-mondwest); font-size: 14px; letter-spacing: .12em; color: var(--midground); }
+  .article-body .post-meta .date { font-family: var(--font-mono); font-size: 12px; color: #ffffff70; text-transform: uppercase; letter-spacing: .08em; }
+  .article-body p { font-family: var(--font-sans); margin-bottom: 18px; color: #f5f5f5cc; font-size: 16.5px; line-height: 1.7; }
+  .article-body h2 { font-family: var(--font-expanded); text-transform: uppercase; font-size: 22px; letter-spacing: .02em; margin: 36px 0 14px; color: var(--midground); }
+  .article-body pre { background: #00000080; border: 1px solid var(--border); padding: 16px; overflow-x: auto; margin: 18px 0; font-family: var(--font-mono); font-size: 13px; }
+  .article-body code { color: var(--accent-lime); font-family: var(--font-mono); }
+  .article-body blockquote { border-left: 3px solid var(--midground); padding-left: 16px; color: #f5f5f5cc; font-style: italic; margin: 18px 0; font-family: var(--font-sans); }
+  .article-body ul { margin: 0 0 18px 22px; color: #f5f5f5cc; font-family: var(--font-sans); line-height: 1.7; }
+  .article-body a { color: var(--accent-lime); }
+
+  /* ============ FOOTER ============ */
+  footer { padding: 0 24px; }
+  footer .inner { max-width: 1080px; margin: 0 auto; padding: 26px 0 44px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  footer span, footer a { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #ffffff70; text-decoration: none; }
+  footer .ver { color: var(--midground); }
+  footer a:hover { color: var(--midground); }
+  .hidden { display: none; }
 </style>
-
-
-
+</head>
 <body>
 
+<div class="opensrc"><b>Open Source</b> &bull; MIT License &bull; 与你一同生长的个人博客</div>
 
-    <header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">Seecyan</span>
-                </a>
-            </div>
-            
-
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
-<ul class="right nav-menu">
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/" class="waves-effect waves-light">
-      
-      <i class="fas fa-home" style="zoom: 0.6;"></i>
-      
-      <span>首页</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/tags" class="waves-effect waves-light">
-      
-      <i class="fas fa-tags" style="zoom: 0.6;"></i>
-      
-      <span>标签</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/categories" class="waves-effect waves-light">
-      
-      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
-      
-      <span>分类</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/archives" class="waves-effect waves-light">
-      
-      <i class="fas fa-archive" style="zoom: 0.6;"></i>
-      
-      <span>归档</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/about" class="waves-effect waves-light">
-      
-      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
-      
-      <span>关于</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/contact" class="waves-effect waves-light">
-      
-      <i class="fas fa-comments" style="zoom: 0.6;"></i>
-      
-      <span>留言板</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>友情链接</span>
-    </a>
-    
-  </li>
-  
-  <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-</ul>
-
-
-<div id="mobile-nav" class="side-nav sidenav">
-
-    <div class="mobile-head bg-color">
-        
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
-        
-        <div class="logo-name">Seecyan</div>
-        <div class="logo-desc">
-            
-            Never really desperate, only the lost of the soul.
-            
-        </div>
-    </div>
-
-    
-
-    <ul class="menu-list mobile-menu-list">
-        
-        <li class="m-nav-item">
-	  
-		<a href="/" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-home"></i>
-			
-			首页
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/tags" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-tags"></i>
-			
-			标签
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/categories" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-bookmark"></i>
-			
-			分类
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/archives" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-archive"></i>
-			
-			归档
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/about" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-user-circle"></i>
-			
-			关于
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/contact" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-comments"></i>
-			
-			留言板
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			友情链接
-		</a>
-          
-        </li>
-        
-        
-        <li><div class="divider"></div></li>
-        <li>
-            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
-                <i class="fab fa-github-square fa-fw"></i>Fork Me
-            </a>
-        </li>
-        
+<nav>
+  <div class="inner">
+    <div class="brand"><span class="mark">SEECYAN<span class="cur">_</span></span></div>
+    <ul class="nav-links">
+      <li><a href="#demo" data-nav>Demo</a></li>
+      <li><a href="#posts" data-nav>日志</a></li>
+      <li><a href="#topics" data-nav>关于</a></li>
+      <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="#subscribe" class="cta" data-nav>订阅</a></li>
     </ul>
-</div>
+  </div>
+</nav>
 
+<!-- =============== HOME =============== -->
+<div id="home">
 
-        </div>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="inner">
+      <span class="kicker label">// Personal Log · Since 2026</span>
+      <h1>会随你<br /><span class="l2">一同生长</span><br />的博客</h1>
+      <p class="lede">一个关于代码、系统与好奇心的终端式个人博客。记录构建过程中的想法、踩过的坑，以及那些值得长期留存的片段。</p>
+      <div class="hero-actions">
+        <a href="#posts" class="btn solid" data-nav>阅读日志 &darr;</a>
+        <a href="#subscribe" class="btn" data-nav>订阅更新</a>
+      </div>
+    </div>
+  </header>
 
-        
-            <style>
-    .nav-transparent .github-corner {
-        display: none !important;
-    }
-
-    .github-corner {
-        position: absolute;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        border: 0;
-        transform: scale(1.1);
-    }
-
-    .github-corner svg {
-        color: #0f9d58;
-        fill: #fff;
-        height: 64px;
-        width: 64px;
-    }
-
-    .github-corner:hover .octo-arm {
-        animation: a 0.56s ease-in-out;
-    }
-
-    .github-corner .octo-arm {
-        animation: none;
-    }
-
-    @keyframes a {
-        0%,
-        to {
-            transform: rotate(0);
-        }
-        20%,
-        60% {
-            transform: rotate(-25deg);
-        }
-        40%,
-        80% {
-            transform: rotate(10deg);
-        }
-    }
-</style>
-
-<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
-   data-tooltip="Fork Me" data-position="left" data-delay="50">
-    <svg viewBox="0 0 250 250" aria-hidden="true">
-        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-              fill="currentColor" class="octo-body"></path>
-    </svg>
-</a>
-        
-    </nav>
-
-</header>
-
-    
-<style>
-    .carousel-control {
-        width: 45px;
-        height: 45px;
-        line-height: 55px;
-        border-radius: 45px;
-        background: transparent;
-        cursor: pointer;
-        z-index: 100;
-    }
-
-    #prev-cover {
-        position: absolute;
-        top: 48%;
-        left: 8px;
-    }
-
-    #next-cover {
-        position: absolute;
-        top: 48%;
-        right: 8px;;
-    }
-
-    #prev-cover i {
-        margin-right: 3px;
-    }
-
-    #next-cover i {
-        margin-left: 3px;
-    }
-
-    .carousel-control:hover {
-        background-color: rgba(0, 0, 0, .4);
-    }
-
-    .carousel-control i {
-        color: #fff;
-        font-size: 2.4rem;
-    }
-</style>
-
-
-
-<div class="carousel carousel-slider center index-cover" data-indicators="true" style="margin-top: -64px;">
-    
-
-    <div class="carousel-item red white-text bg-cover about-cover">
-        <div class="container">
-            <div class="row">
-    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
-        <div class="brand">
-            <div class="title center-align">
-                
-                青 见
-                
+  <!-- SEE IT IN ACTION -->
+  <section class="block" id="demo">
+    <div class="inner">
+      <div class="sec-label"><span class="num">01</span><span class="t display">See It in Action</span></div>
+      <div class="demo-grid">
+        <div class="demo-left">
+          <div class="terminal">
+            <div class="bar">
+              <span class="dots"><span></span><span></span><span></span></span>
+              <span class="ttl">seecyan@blog</span>
             </div>
-
-            <div class="description center-align">
-                
-                <span id="subtitle"></span>
-                <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
-                <script>
-                    var typed = new Typed("#subtitle", {
-                        strings: [ 
-                            
-                                "所有的结局都已写好",
-                            
-                                "所有的泪水也都已启程",
-                            
-                                "却忽然忘了是怎么样的一个开始",
-                            
-                                "在那个古老的不再回来的夏日",
-                            
-                                "无论我如何地去追索",
-                            
-                                "年轻的你只如云影掠过",
-                            
-                                "而你微笑的面容极浅极淡",
-                            
-                                "逐渐隐没在日落後的群岚",
-                            
-                                "遂翻开那发黄的扉页",
-                            
-                                "命运将它装订得极为拙劣",
-                            
-                                "含著泪 我一读再读",
-                            
-                                "却不得不承认",
-                            
-                                "青春是一本太仓促的书",
-                            
-                        ],
-                        startDelay: 300,
-                        typeSpeed: 50,
-                        loop: true,
-                        backSpeed: 100,
-                        showCursor: true
-                    });
-                </script>
-                
-            </div>
+            <div class="scr" id="scr" aria-label="Terminal Demo" role="img"></div>
+          </div>
         </div>
+        <div class="demo-right">
+          <span class="glyph">SC</span>
+          <span class="stamp">SEECYAN BLOG</span>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- POSTS -->
+  <section class="block" id="posts">
+    <div class="inner">
+      <div class="sec-label"><span class="num">02</span><span class="t display">最新日志</span></div>
+      <div id="post-list"></div>
+    </div>
+  </section>
+
+  <!-- TOPICS / ABOUT GRID -->
+  <section class="block" id="topics">
+    <div class="inner">
+      <div class="sec-label"><span class="num">03</span><span class="t display">关于这里</span></div>
+      <div class="grid3">
+        <div class="gcell"><span class="gl">写什么</span><p>系统编程、工具链、效率工作流，偶尔聊聊读书与生活。</p><span class="hl"></span></div>
+        <div class="gcell"><span class="gl">更新频率</span><p>想到就写，不为更新而更新。质量优先于数量。</p><span class="hl"></span></div>
+        <div class="gcell"><span class="gl">技术栈</span><p>纯静态单文件，零依赖，可离线运行，本地自带字体。</p><span class="hl"></span></div>
+        <div class="gcell"><span class="gl">设计理念</span><p>深色背景、等宽字体、琥珀高亮——克制即专注。</p><span class="hl"></span></div>
+        <div class="gcell"><span class="gl">长期主义</span><p>每篇文章都是长期维护的笔记，会随认知更新。</p><span class="hl"></span></div>
+        <div class="gcell"><span class="gl">联系</span><p>邮件 / GitHub Issues / 评论区，欢迎交流与指正。</p><span class="hl"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBSCRIBE -->
+  <section class="block" id="subscribe">
+    <div class="inner">
+      <div class="sec-label"><span class="num">04</span><span class="t display">保持同步</span></div>
+      <div class="portal">
+        <div class="pl">
+          <div class="tiers">RSS &bull; Email &bull; Atom</div>
+          <h2>订阅更新</h2>
+          <p>新文章发布时第一时间收到通知。不打扰、可随时退订，只发与博客相关的内容。</p>
+          <form class="form" onsubmit="return fakeSub(event)">
+            <input type="email" placeholder="you@example.com" required />
+            <button type="submit">订阅</button>
+          </form>
+        </div>
+        <div class="pr"><span class="big">RSS</span></div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /home -->
+
+<!-- =============== ARTICLE =============== -->
+<div id="article">
+  <div class="inner">
+    <button class="back-btn" onclick="goHome()">&larr; 返回列表</button>
+    <article class="article-body" id="article-body"></article>
+  </div>
 </div>
 
-
-<script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
-    $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
-</script>
-
-
-
-            <div class="cover-btns">
-                <a href="#indexCard" class="waves-effect waves-light btn">
-                    <i class="fa fa-angle-double-down"></i>开始阅读
-                </a>
-
-                
-                    <a href="https://github.com/seecyan/" class="waves-effect waves-light btn" target="_blank">
-                        <i class="fab fa-github-alt"></i>Github
-                    </a>
-                
-            </div>
-            <div class="cover-social-link">
-    <a href="https://github.com/seecyan/seecyan.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:990683909" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=990683909" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 990683909" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-</div>
-        </div>
-    </div>
-
-    
-</div>
-
-<script>
-    $(function () {
-        let coverSlider = $('.carousel');
-
-        //用户触摸轮播自动 restartPlay 是否生效
-        let initUserPressedOrDraggedActive = false
-
-        //用户触摸轮播自动 restartPlay
-        function initUserPressedOrDragged(instance) {
-            setInterval(() => {
-                if (instance.pressed || instance.dragged) {
-                    // console.log('initUserPressedOrDragged: ',instance.pressed,instance.dragged)
-                    restartPlay()
-                }
-            }, 1000)
-        }
-
-        coverSlider.carousel({
-            duration: Number('120'),
-            fullWidth: true,
-            indicators: 'false' === 'true',
-            onCycleTo() {
-                if (!initUserPressedOrDraggedActive) {
-                    // console.log('initUserPressedOrDraggedActive')
-                    initUserPressedOrDragged(this)
-                    initUserPressedOrDraggedActive = true
-                }
-            },
-        })
-
-        let carouselIntervalId;
-        
-        // Loop to call the next cover article picture.
-        let autoCarousel = function () {
-            carouselIntervalId = setInterval(function () {
-                coverSlider.carousel('next');
-            }, 5000);
-        };
-        autoCarousel();
-        
-
-        function restartPlay() {
-            
-            clearInterval(carouselIntervalId);
-            autoCarousel();
-            
-        };
-
-        
-        // prev and next cover post.
-        $('#prev-cover').click(function () {
-            coverSlider.carousel('prev');
-            restartPlay();
-        });
-        $('#next-cover').click(function () {
-            coverSlider.carousel('next');
-            restartPlay();
-        });
-        
-    });
-</script>
-
-
-
-<main class="content">
-
-    
-    <div id="indexCard" class="index-card">
-        <div class="container ">
-            <div class="card">
-                <div class="card-content">
-                    
-                        <div class="dream">
-    
-    <div class="title center-align">
-        <i class="far fa-lightbulb"></i>&nbsp;&nbsp;万物皆虚 万事皆允
-    </div>
-    
-    <div class="row">
-        <div class="col l8 offset-l2 m10 offset-m1 s10 offset-s1 center-align text">
-            内容测试
-        </div>
-    </div>
-</div>
-
-                    
-
-                    
-
-                    
-                        <link rel="stylesheet" href="/libs/dplayer/DPlayer.min.css">
-<div class="video-player">
-    
-    <div class="title center-align">
-        <i class="fas fa-video-camera"></i>&nbsp;&nbsp;大佬的视频
-    </div>
-    
-    <div class="row">
-		
-			<iframe src='//player.bilibili.com/player.html?aid=584606650&bvid=BV1oz4y1o72t&cid=235932402&page=1' scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" align="middle"  width="100%"> </iframe>
-		
-    </div>
-</div>
-
-<script src="/libs/dplayer/DPlayer.min.js"></script>
-<script>
-    $(function () {
-        new DPlayer({
-            container: document.getElementById('dplayer'),
-            autoplay: 'false' === 'true',
-            theme: '#42b983',
-            loop: 'false' === 'true',
-            lang: 'zh-CN' === 'zh-CN' ? 'zh-cn' : 'en',
-            preload: 'auto',
-            volume: Number('0.7'),
-            video: {
-                url: '',
-                pic: '',
-                thumbnails: ''
-            }
-        });
-    });
-</script>
-
-                    
-
-                    
-                    <div id="recommend-sections" class="recommend">
-                        
-
-
-
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-    
-
-    
-
-    <!-- 所有文章卡片 -->
-    <article id="articles" class="container articles">
-        <div class="row article-row">
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/09/13/hello-world/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                            
-                            <span class="card-title">Hello World</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-13
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                FENG
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-        </div>
-    </article>
-
-</main>
-
-
-
-
-    <footer class="page-footer bg-color">
-    
-
-    <div class="container row center-align"
-         style="margin-bottom: 0px !important;">
-        <div class="col s12 m8 l8 copy-right">
-            Copyright&nbsp;&copy;
-            
-                <span id="year">2019-2021</span>
-            
-            <span id="year">2019</span>
-            <a href="/about" target="_blank">FENG</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
-            <br>
-            
-                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">73</span>
-            
-            
-            
-                
-            
-            
-                <span id="busuanzi_container_site_pv">
-                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
-            </span>
-            
-            
-                <span id="busuanzi_container_site_uv">
-                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
-            </span>
-            
-            <br>
-
-            <!-- 运行天数提醒. -->
-            
-            <br>
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/seecyan/seecyan.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:990683909" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=990683909" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 990683909" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-</div>
-    </div>
+<footer>
+  <div class="inner">
+    <span class="ver">SEECYAN BLOG v1.0.0</span>
+    <span>MIT License &middot; 2026</span>
+    <a href="#home" data-nav>回到顶部 &uarr;</a>
+  </div>
 </footer>
 
-<div class="progress-bar"></div>
-
-
-    <!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
-                   class="search-input">
-        </div>
-        <div id="searchResult"></div>
-    </div>
-</div>
-
-<script type="text/javascript">
-$(function () {
-    var searchFunc = function (path, search_id, content_id) {
-        'use strict';
-        $.ajax({
-            url: path,
-            dataType: "xml",
-            success: function (xmlResponse) {
-                // get the contents from search data
-                var datas = $("entry", xmlResponse).map(function () {
-                    return {
-                        title: $("title", this).text(),
-                        content: $("content", this).text(),
-                        url: $("url", this).text()
-                    };
-                }).get();
-                var $input = document.getElementById(search_id);
-                var $resultContent = document.getElementById(content_id);
-                $input.addEventListener('input', function () {
-                    var str = '<ul class=\"search-result-list\">';
-                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                    $resultContent.innerHTML = "";
-                    if (this.value.trim().length <= 0) {
-                        return;
-                    }
-                    // perform local searching
-                    datas.forEach(function (data) {
-                        var isMatch = true;
-                        var data_title = data.title.trim().toLowerCase();
-                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                        var data_url = data.url;
-                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
-                        var index_title = -1;
-                        var index_content = -1;
-                        var first_occur = -1;
-                        // only match artiles with not empty titles and contents
-                        if (data_title !== '' && data_content !== '') {
-                            keywords.forEach(function (keyword, i) {
-                                index_title = data_title.indexOf(keyword);
-                                index_content = data_content.indexOf(keyword);
-                                if (index_title < 0 && index_content < 0) {
-                                    isMatch = false;
-                                } else {
-                                    if (index_content < 0) {
-                                        index_content = 0;
-                                    }
-                                    if (i === 0) {
-                                        first_occur = index_content;
-                                    }
-                                }
-                            });
-                        }
-                        // show search results
-                        if (isMatch) {
-                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                            var content = data.content.trim().replace(/<[^>]+>/g, "");
-                            if (first_occur >= 0) {
-                                // cut out 100 characters
-                                var start = first_occur - 20;
-                                var end = first_occur + 80;
-                                if (start < 0) {
-                                    start = 0;
-                                }
-                                if (start === 0) {
-                                    end = 100;
-                                }
-                                if (end > content.length) {
-                                    end = content.length;
-                                }
-                                var match_content = content.substr(start, end);
-                                // highlight all keywords
-                                keywords.forEach(function (keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
-                                });
-
-                                str += "<p class=\"search-result\">" + match_content + "...</p>"
-                            }
-                            str += "</li>";
-                        }
-                    });
-                    str += "</ul>";
-                    $resultContent.innerHTML = str;
-                });
-            }
-        });
-    };
-
-    searchFunc('/search.xml', 'searchInput', 'searchResult');
-});
-</script>
-
-    <!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</div>
-
-
-    <script src="/libs/materialize/materialize.min.js"></script>
-    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="/libs/aos/aos.js"></script>
-    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="/js/matery.js"></script>
-
-    <!-- Baidu Analytics -->
-
-    <!-- Baidu Push -->
-
 <script>
-    (function () {
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        } else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
+/* ===================== POSTS ===================== */
+const POSTS = [
+  { id:'terminal-aesthetic', title:'为什么我偏爱终端美学', date:'2026-06-08', tag:'设计',
+    excerpt:'深色背景、等宽字体、琥珀色高亮——这套视觉语言不只是怀旧，它是一种对专注的承诺。',
+    html:`<h1>为什么我偏爱终端美学</h1>
+      <div class="post-meta"><span class="tag">设计</span><span class="date">2026-06-08 · 5 分钟</span></div>
+      <p>第一次盯着满屏滚动的日志时，我以为那只是工程师的无奈选择。后来才明白，<strong>终端是一种克制的设计哲学</strong>：去掉一切不必要的装饰，只留下信息本身。</p>
+      <h2>三个核心要素</h2>
+      <p>一套耐看的终端风格界面，几乎都建立在三个支柱之上：</p>
+      <ul><li>足够暗的背景，降低长时间阅读的疲劳；</li><li>单一的强调色，用来标记"此处重要"；</li><li>等宽字体，让对齐与节奏自然产生。</li></ul>
+      <blockquote>限制即自由。当调色板只剩三种颜色，每一个决定都变得清晰。</blockquote>
+      <h2>它如何影响写作</h2>
+      <p>当页面不再争夺注意力，文字本身就被放到了中心。这也是这个博客存在的理由——把舞台还给内容。</p>
+      <pre><code>$ echo "less is more" | cowsay</code></pre><p>就这么简单。</p>` },
+  { id:'shell-workflow', title:'我的日常 Shell 工作流', date:'2026-05-21', tag:'工具',
+    excerpt:'从 alias 到函数，从 fzf 到自定义脚本。分享几个让我每天省下半小时的小配置。',
+    html:`<h1>我的日常 Shell 工作流</h1>
+      <div class="post-meta"><span class="tag">工具</span><span class="date">2026-05-21 · 7 分钟</span></div>
+      <p>命令行是我效率的发动机。这些年攒下的配置不多，但每一条都活在肌肉记忆里。</p>
+      <h2>必备 alias</h2>
+      <pre><code>alias gs='git status -sb'
+alias gl='git log --oneline --graph -20'
+alias serve='python -m http.server 8000'</code></pre>
+      <h2>模糊查找一切</h2>
+      <p>装上 <code>fzf</code> 之后，<code>Ctrl-R</code> 搜历史、<code>Ctrl-T</code> 选文件，几乎再没手动敲过长路径。</p>
+      <blockquote>工具的价值不在于强大，而在于你愿不愿意每天都用它。</blockquote>
+      <h2>一个小函数</h2>
+      <pre><code>mkcd() { mkdir -p "$1" && cd "$1"; }</code></pre>
+      <p>创建目录并立刻进入——一个微小却高频的动作，值得为它写三十个字符。</p>` },
+  { id:'reading-code', title:'读源码，比写源码更难', date:'2026-04-30', tag:'思考',
+    excerpt:'我们花了无数时间学习如何写代码，却很少有人教我们如何读别人的代码。这其实是更稀缺的能力。',
+    html:`<h1>读源码，比写源码更难</h1>
+      <div class="post-meta"><span class="tag">思考</span><span class="date">2026-04-30 · 6 分钟</span></div>
+      <p>写代码是表达自己的意图；读代码是重建别人的意图。后者要困难得多，因为你必须在缺失上下文的情况下逆向工程一整套思维。</p>
+      <h2>我的方法</h2>
+      <ul><li>先跑起来，再读代码——观察输入输出胜过盯着函数发呆；</li><li>从入口往下追，而不是从头到尾平铺；</li><li>边读边画调用图，把短期记忆挪到纸上。</li></ul>
+      <blockquote>能读懂一个大型项目的人，往往比能从零写一个的人更值钱。</blockquote>
+      <p>下次面对陌生代码库别慌——把它当成一座城市，先找到主干道。</p>` },
+];
+
+/* render numbered post rows (Hermes /desktop feature-block style) */
+const list = document.getElementById('post-list');
+POSTS.forEach((p,i)=>{
+  const row = document.createElement('div');
+  row.className = 'feature-row';
+  row.onclick = ()=>openPost(p.id);
+  row.innerHTML = `
+    <div class="fn">${String(i+1).padStart(2,'0')}</div>
+    <div class="fc">
+      <div class="meta"><span class="tag">${p.tag}</span><span class="date">${p.date}</span></div>
+      <h3>${p.title}</h3>
+      <p>${p.excerpt}</p>
+      <span class="arrow">阅读全文 &rarr;</span>
+    </div>`;
+  list.appendChild(row);
+});
+
+/* ===================== ROUTING ===================== */
+function openPost(id){
+  const post = POSTS.find(p=>p.id===id); if(!post) return;
+  document.getElementById('article-body').innerHTML = post.html;
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('article').classList.add('active');
+  window.scrollTo({top:0});
+  history.replaceState(null,'','#post-'+id);
+}
+function goHome(){
+  document.getElementById('article').classList.remove('active');
+  document.getElementById('home').classList.remove('hidden');
+  history.replaceState(null,'',location.pathname);
+  window.scrollTo({top:0});
+}
+window.addEventListener('hashchange',()=>{
+  if(location.hash.startsWith('#post-')) openPost(location.hash.slice(6));
+});
+if(location.hash.startsWith('#post-')) openPost(location.hash.slice(6));
+
+document.querySelectorAll('[data-nav]').forEach(a=>a.addEventListener('click',()=>{
+  if(document.getElementById('article').classList.contains('active')) goHome();
+}));
+
+function fakeSub(e){
+  e.preventDefault();
+  const f=e.target; f.querySelector('input').value='';
+  const b=f.querySelector('button'); const o=b.textContent;
+  b.textContent='已订阅 ✓'; setTimeout(()=>b.textContent=o,1600);
+  return false;
+}
+
+/* ===================== CYCLING TERMINAL ("See It in Action") ===================== */
+(function(){
+  const scr = document.getElementById('scr');
+  const cursor = document.createElement('span'); cursor.className='cursor';
+
+  /* ---------- demo scenarios that cycle ---------- */
+  const SCENES = [
+    // Scene 1: whoami
+    [
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'whoami', c:'ln-cmd'},
+      {t:'独立开发者 · 系统爱好者 · 终端常驻民', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'cat ./mission.txt', c:'ln-cmd'},
+      {t:'把复杂的事情讲清楚，把简单的事情做扎实。', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'ls ./posts', c:'ln-cmd'},
+      {t:'terminal-aesthetic.md   shell-workflow.md   reading-code.md', c:'ln-accent'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'./subscribe --rss', c:'ln-cmd'},
+      {t:'✓ 已加入订阅列表，新文章发布时通知你。', c:'ln-out'},
+    ],
+    // Scene 2: git workflow
+    [
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'git log --oneline -3', c:'ln-cmd'},
+      {t:'a3f21c7 feat: 终端动画循环播放', c:'ln-accent'},
+      {t:'b81e904 style: 字体 fallback 优化', c:'ln-accent'},
+      {t:'c7d4521 init: 项目初始化', c:'ln-accent'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'git diff --stat', c:'ln-cmd'},
+      {t:' index.html | 42 +++++++++++++++++++-', c:'ln-out'},
+      {t:' 1 file changed, 39 insertions(+), 3 deletions(-)', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'git push origin main', c:'ln-cmd'},
+      {t:'Enumerating objects: 5, done.', c:'ln-out'},
+      {t:'To github.com:seecyan/my-blogs.git', c:'ln-out'},
+      {t:'   a3f21c7..b81e904  main -> main', c:'ln-accent'},
+    ],
+    // Scene 3: system info
+    [
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'uname -a', c:'ln-cmd'},
+      {t:'Windows 11 10.0.26200 x86_64 GNU/Bash', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'python --version', c:'ln-cmd'},
+      {t:'Python 3.13.0', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'echo "less is more" | cowsay', c:'ln-cmd'},
+      {t:' _____________________', c:'ln-accent'},
+      {t:'< less is more >', c:'ln-accent'},
+      {t:' ---------------------', c:'ln-accent'},
+      {t:'        \\   ^__^', c:'ln-accent'},
+      {t:'         \\  (oo)\\_______', c:'ln-accent'},
+      {t:'            (__)\\       )\\/\\', c:'ln-accent'},
+      {t:'                ||----w |', c:'ln-accent'},
+      {t:'                ||     ||', c:'ln-accent'},
+    ],
+    // Scene 4: obsidian vault
+    [
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'ls ~/Vault/', c:'ln-cmd'},
+      {t:'00_收件箱/  01_项目/  02_领域/  03_资源/', c:'ln-accent'},
+      {t:'04_归档/   05_日志/  90_模板/  99_附件/', c:'ln-accent'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'cat ~/Vault/05_日志/2026-06-10.md | head -5', c:'ln-cmd'},
+      {t:'---', c:'ln-out'},
+      {t:'date: 2026-06-10', c:'ln-out'},
+      {t:'weekday: Tuesday', c:'ln-out'},
+      {t:'tags: [daily]', c:'ln-out'},
+      {t:'---', c:'ln-out'},
+      {t:'', c:'ln-out'},
+      {t:'$ ', c:'ln-prompt', noNL:true}, {t:'git -C ~/Vault push --quiet', c:'ln-cmd'},
+      {t:'✓ Vault 已同步到 GitHub', c:'ln-accent'},
+    ],
+  ];
+
+  let sceneIdx = 0;
+
+  function clearScr(){
+    scr.innerHTML = '';
+    scr.appendChild(cursor);
+  }
+
+  /* type one scene, then clear and start next */
+  function playScene(sceneIdx){
+    const SCRIPT = SCENES[sceneIdx];
+    clearScr();
+    let li=0, ci=0, buf=document.createElement('span');
+    scr.insertBefore(buf, cursor);
+
+    function tick(){
+      if(li>=SCRIPT.length){
+        // scene done — pause, then next scene
+        setTimeout(()=>{
+          // fade out effect
+          scr.style.transition = 'opacity 0.4s';
+          scr.style.opacity = '0';
+          setTimeout(()=>{
+            scr.style.transition = 'none';
+            scr.style.opacity = '1';
+            playScene((sceneIdx+1) % SCENES.length);
+          }, 450);
+        }, 2200);
+        return;
+      }
+      const item = SCRIPT[li];
+      if(ci===0){
+        buf=document.createElement('span'); buf.className=item.c||'';
+        scr.insertBefore(buf, cursor);
+      }
+      if(ci < item.t.length){
+        buf.textContent += item.t[ci]; ci++;
+        scr.scrollTop = scr.scrollHeight;
+        const ch=item.t[ci-1];
+        let d = item.c==='ln-cmd' ? 38 : 8;
+        if(ch==='，'||ch==='。'||ch==='·') d=160;
+        setTimeout(tick, d);
+      } else {
+        if(!item.noNL){ scr.insertBefore(document.createTextNode('\n'), cursor); }
+        li++; ci=0;
+        setTimeout(tick, item.c==='ln-cmd'? 380 : (item.t===''?60:240));
+      }
+    }
+    tick();
+  }
+
+  // start first scene when demo scrolls into view
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(e=>{ if(e.isIntersecting){ setTimeout(()=>playScene(0),400); io.disconnect(); } });
+  }, {threshold:.3});
+  io.observe(scr);
+})();
 </script>
-
-    
-    <script src="/libs/others/clicklove.js" async="async"></script>
-    
-    
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-    
-
-    
-
-    
-
-    <!--腾讯兔小巢-->
-    
-    
-    <script type="text/javascript" color="0,0,255"
-        pointColor="0,0,255" opacity='0.7'
-        zIndex="-1" count="99"
-        src="/libs/background/canvas-nest.js"></script>
-    
-
-    
-
-    
-    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
-    
-
-    
-    <script src="/libs/instantpage/instantpage.js" type="module"></script>
-    
-
-
-
-
 </body>
-
 </html>
