@@ -278,62 +278,6 @@
   footer .ver { color: var(--midground); }
   footer a:hover { color: var(--midground); }
   .hidden { display: none; }
-
-  /* ============ HOT LIST ============ */
-  .hotlist-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 0;
-  }
-  .hotlist-card {
-    border: 1px solid var(--border); display: flex; flex-direction: column;
-    transition: background .15s;
-  }
-  .hotlist-card:hover { background: #edff4506; }
-  .hotlist-card-head {
-    display: flex; align-items: center; gap: 10px; padding: 12px 16px;
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .hotlist-card-icon {
-    flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center;
-    justify-content: center; font-family: var(--font-mono); font-size: 11px;
-    font-weight: 700; color: var(--background); background: var(--midground);
-    border-radius: 2px;
-  }
-  .hotlist-card-name {
-    font-family: var(--font-mono); font-size: 12px; text-transform: uppercase;
-    letter-spacing: .1em; color: var(--foreground);
-  }
-  .hotlist-card-items { flex: 1; }
-  .hotlist-item {
-    display: flex; align-items: center; gap: 12px; padding: 10px 16px;
-    border-bottom: 1px solid var(--border-soft); cursor: pointer;
-    transition: background .12s; text-decoration: none; color: inherit;
-  }
-  .hotlist-item:last-child { border-bottom: 0; }
-  .hotlist-item:hover { background: #edff450a; }
-  .hotlist-rank {
-    flex-shrink: 0; width: 22px; height: 22px; display: flex; align-items: center;
-    justify-content: center; font-family: var(--font-mono); font-size: 11px;
-    color: #ffffff40; border: 1px solid var(--border-soft); border-radius: 2px;
-  }
-  .hotlist-item:nth-child(1) .hotlist-rank { color: var(--midground); border-color: #edff4540; }
-  .hotlist-item:nth-child(2) .hotlist-rank { color: #edff45aa; border-color: #edff4530; }
-  .hotlist-item:nth-child(3) .hotlist-rank { color: #edff4588; border-color: #edff4525; }
-  .hotlist-info { flex: 1; min-width: 0; }
-  .hotlist-title {
-    font-family: var(--font-sans); font-size: 13px; color: var(--foreground);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    line-height: 1.3;
-  }
-  .hotlist-item:hover .hotlist-title { color: var(--midground); }
-  .hotlist-hot {
-    flex-shrink: 0; font-family: var(--font-mono); font-size: 10px;
-    color: #ffffff30; letter-spacing: .05em;
-  }
-  .hotlist-card-status {
-    padding: 8px 16px; font-family: var(--font-mono); font-size: 10px;
-    color: #ffffff25; border-top: 1px solid var(--border-soft); letter-spacing: .05em;
-  }
 </style>
 </head>
 <body>
@@ -345,7 +289,6 @@
     <div class="brand"><span class="mark">SEECYAN<span class="cur">_</span></span></div>
     <ul class="nav-links">
       <li><a href="#demo" data-nav>Demo</a></li>
-      <li><a href="#hotlist" data-nav>热榜</a></li>
       <li><a href="#posts" data-nav>日志</a></li>
       <li><a href="#topics" data-nav>关于</a></li>
       <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
@@ -392,18 +335,10 @@
     </div>
   </section>
 
-  <!-- HOT LIST -->
-  <section class="block" id="hotlist">
-    <div class="inner">
-      <div class="sec-label"><span class="num">02</span><span class="t display">热榜速览</span></div>
-      <div class="hotlist-grid" id="hotlist-grid"></div>
-    </div>
-  </section>
-
   <!-- POSTS -->
   <section class="block" id="posts">
     <div class="inner">
-      <div class="sec-label"><span class="num">03</span><span class="t display">最新日志</span></div>
+      <div class="sec-label"><span class="num">02</span><span class="t display">最新日志</span></div>
       <div id="post-list"></div>
     </div>
   </section>
@@ -411,7 +346,7 @@
   <!-- TOPICS / ABOUT GRID -->
   <section class="block" id="topics">
     <div class="inner">
-      <div class="sec-label"><span class="num">04</span><span class="t display">关于这里</span></div>
+      <div class="sec-label"><span class="num">03</span><span class="t display">关于这里</span></div>
       <div class="grid3">
         <div class="gcell"><span class="gl">写什么</span><p>系统编程、工具链、效率工作流，偶尔聊聊读书与生活。</p><span class="hl"></span></div>
         <div class="gcell"><span class="gl">更新频率</span><p>想到就写，不为更新而更新。质量优先于数量。</p><span class="hl"></span></div>
@@ -426,7 +361,7 @@
   <!-- SUBSCRIBE -->
   <section class="block" id="subscribe">
     <div class="inner">
-      <div class="sec-label"><span class="num">05</span><span class="t display">保持同步</span></div>
+      <div class="sec-label"><span class="num">04</span><span class="t display">保持同步</span></div>
       <div class="portal">
         <div class="pl">
           <div class="tiers">RSS &bull; Email &bull; Atom</div>
@@ -517,91 +452,6 @@ POSTS.forEach((p,i)=>{
     </div>`;
   list.appendChild(row);
 });
-
-/* ===================== HOT LIST ===================== */
-(function(){
-  const SHOW = 3;
-  const gridEl = document.getElementById('hotlist-grid');
-
-  const PLATFORMS = [
-    {
-      id:'baidu', name:'百度热搜', icon:'百',
-      fetch: async () => {
-        const r = await fetch('https://v.api.aa1.cn/api/topbaidu/index.php', {signal:AbortSignal.timeout(8000)});
-        const d = await r.json();
-        return (d.newslist||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.url||'#',hot:x.hotnum}));
-      }
-    },
-    {
-      id:'bilibili', name:'B站热搜', icon:'B',
-      fetch: async () => {
-        const r = await fetch('https://api.bilibili.com/x/web-interface/wbi/search/square?limit='+SHOW,{signal:AbortSignal.timeout(8000)});
-        const d = await r.json();
-        return (d.data?.trending?.list||[]).slice(0,SHOW).map(x=>({title:x.keyword,url:'https://search.bilibili.com/all?keyword='+encodeURIComponent(x.keyword),hot:x.hot_id}));
-      }
-    },
-    {
-      id:'sspai', name:'少数派', icon:'派',
-      fetch: async () => {
-        const r = await fetch('https://sspai.com/api/v1/articles?limit='+SHOW+'&sort=matrix_at',{signal:AbortSignal.timeout(8000)});
-        const d = await r.json();
-        return (d.data||d.list||[]).slice(0,SHOW).map(x=>({title:x.title,url:'https://sspai.com/article/'+(x.id||x.slug),hot:x.like_count||x.views}));
-      }
-    },
-    {
-      id:'github', name:'GitHub', icon:'G',
-      fetch: async () => {
-        const d=new Date();d.setDate(d.getDate()-7);const since=d.toISOString().split('T')[0];
-        const r = await fetch('https://api.github.com/search/repositories?q=created:>'+since+'&sort=stars&order=desc&per_page='+SHOW,{signal:AbortSignal.timeout(8000)});
-        const data = await r.json();
-        return (data.items||[]).slice(0,SHOW).map(x=>({title:x.full_name,url:x.html_url,hot:x.stargazers_count}));
-      }
-    },
-    {
-      id:'36kr', name:'36氪', icon:'36',
-      fetch: async () => {
-        const r = await fetch('https://36kr.com/api/newsflash?per_page='+SHOW,{signal:AbortSignal.timeout(8000)});
-        const d = await r.json();
-        return (d.data?.items||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.news_url||'#',hot:x.views_count}));
-      }
-    },
-    {
-      id:'v2ex', name:'V2EX', icon:'V',
-      fetch: async () => {
-        const r = await fetch('https://www.v2ex.com/api/topics/hot.json',{signal:AbortSignal.timeout(8000)});
-        const items = await r.json();
-        return (items||[]).slice(0,SHOW).map(x=>({title:x.title,url:x.url||'#',hot:x.replies}));
-      }
-    },
-  ];
-
-  // render skeleton
-  PLATFORMS.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'hotlist-card';
-    card.id = 'hc-'+p.id;
-    card.innerHTML = `<div class="hotlist-card-head"><span class="hotlist-card-icon">${p.icon}</span><span class="hotlist-card-name">${p.name}</span></div><div class="hotlist-card-items"><div class="hotlist-card-status">loading...</div></div>`;
-    gridEl.appendChild(card);
-  });
-
-  // fetch all
-  PLATFORMS.forEach(async p => {
-    const el = document.querySelector('#hc-'+p.id+' .hotlist-card-items');
-    try {
-      const items = await p.fetch();
-      if(!items.length) throw new Error('empty');
-      el.innerHTML = items.map((x,i) => {
-        const t = (x.title||'').replace(/</g,'&lt;');
-        const h = x.hot ? formatHot(x.hot) : '';
-        return `<a class="hotlist-item" href="${x.url||'#'}" target="_blank" rel="noopener"><span class="hotlist-rank">${i+1}</span><div class="hotlist-info"><div class="hotlist-title">${t}</div></div>${h?`<span class="hotlist-hot">${h}</span>`:''}</a>`;
-      }).join('');
-    } catch(e) {
-      el.innerHTML = '<div class="hotlist-card-status">暂时无法获取</div>';
-    }
-  });
-
-  function formatHot(n){n=Number(n);if(isNaN(n))return'';if(n>=10000)return(n/10000).toFixed(1)+'w';return String(n);}
-})();
 
 /* ===================== ROUTING ===================== */
 function openPost(id){
